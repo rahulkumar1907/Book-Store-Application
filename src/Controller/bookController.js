@@ -1,6 +1,7 @@
+const mongoose = require('mongoose');
 const userModel = require('../Model/userModel');
 const bookModel = require('../Model/bookModel');
-const generateSlug=require('./slugFunction');
+const generateSlug = require('./slugFunction');
 
 
 const createBook = async (req, res) => {
@@ -9,9 +10,16 @@ const createBook = async (req, res) => {
         if (!authors || authors.length === 0) {
             return res.status(400).send({ status: false, error: 'atleast one author required' });
         }
-
-        // Check if any of the author IDs are not valid authors
         const authorIds = authors;
+        let notvalidId = [];
+        for (const authorId of authorIds) {
+            if (!mongoose.Types.ObjectId.isValid(authorId)) {
+                notvalidId.push(authorId);
+            }
+        }
+        if (notvalidId.length > 0) { return res.status(400).send({ status: false, error: 'these author id not valid :' + notvalidId }); }
+
+
         let notFoundAuthor = [];
         for (const authorId of authorIds) {
             const author = await userModel.findOne({ _id: authorId, role: 'author' });
