@@ -14,10 +14,10 @@ const createPurchaseHistory = async (req, res) => {
         if (!quantity || typeof (quantity) !== 'number' || quantity <= 0) {
             return res.status(400).send({ status: false, error: 'quantity is required and should be number and greater than 0' });
         }
-        if (!price || typeof (price) !== 'number') {
-            return res.status(400).send({ status: false, error: 'price is required and should be number' });
+        if (!price || typeof (price) !== 'number' || price < 100 || price > 1000) {
+            return res.status(400).send({ status: false, error: 'price is required and should be number between 100-1000' });
         }
-        if (!quantity || typeof (quantity) !== 'number' || quantity<=0) { return res.status(400).send({ status: false, error: "missing/invalid parameter quantity, should be number and greater than 0" }); }
+        if (!quantity || typeof (quantity) !== 'number' || quantity <= 0) { return res.status(400).send({ status: false, error: "missing/invalid parameter quantity, should be number and greater than 0" }); }
         if (!userId) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
         if (!mongoose.Types.ObjectId.isValid(userId)) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
         if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, error: "missing/invalid parameter bookId" }); }
@@ -49,4 +49,18 @@ const createPurchaseHistory = async (req, res) => {
     }
 };
 
-module.exports = { createPurchaseHistory };
+const getPurchaseHistoryByUser = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        if (!userId) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
+        if (!mongoose.Types.ObjectId.isValid(userId)) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
+
+        const purchaseHistory = await purchaseModel.find({ userId: userId }).select({ __v: 0, userId: 0 });
+        if (purchaseHistory.length === 0) { return res.status(404).send({ status: false, error: "no record found" }); }
+        return res.status(200).json({ status: true, data: purchaseHistory });
+    } catch (error) {
+        return res.status(500).json({ status: false, error: error.message });
+    }
+};
+
+module.exports = { createPurchaseHistory, getPurchaseHistoryByUser };

@@ -62,4 +62,33 @@ const createBook = async (req, res) => {
 };
 
 
-module.exports = { createBook };
+const filterBooks = async (req, res) => {
+    try {
+        const { authorId, priceMin, priceMax, title, bookId } = req.query;
+
+        const filter = {};
+        if (authorId) filter.authors = authorId;
+        if (title) filter.title = new RegExp(title, 'i');
+        if (bookId) filter._id = bookId; 
+
+        if (priceMin && priceMax) {
+            filter.price = { $gte: priceMin, $lte: priceMax };
+        } else if (priceMin) {
+            filter.price = { $gte: priceMin };
+        } else if (priceMax) {
+            filter.price = { $lte: priceMax };
+        }
+
+        const books = await bookModel.find(filter);
+        if (books.length == 0) { return res.status(404).send({ status: false, error: 'no book found with your searching criteria' }); }
+
+        res.status(200).send({ status: true, data: books });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ status: false, message: err.message });
+    }
+};
+
+
+
+module.exports = { createBook, filterBooks };
