@@ -21,8 +21,8 @@ const registerUser = async (req, res) => {
         const encryptPassword = await bcrypt.hash(password, saltRounds);
         const userData = {
             username: username.trim(),
-            email: email.trim(),
-            role: role.trim(),
+            email: email.trim().toLowerCase(),
+            role: role.trim().toLowerCase(),
             password: encryptPassword
         };
 
