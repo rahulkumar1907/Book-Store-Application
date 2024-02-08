@@ -10,4 +10,4 @@ function generateSlug(title) {
 
     return slug;
 }
-module.exports={generateSlug}
+module.exports = { generateSlug };

@@ -7,6 +7,6 @@ const revenueSchema = new mongoose.Schema({
     revenue: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: String, trim: true },
-},{timestamps:true});
+}, { timestamps: true });
 
 module.exports = mongoose.model('revenue', revenueSchema);

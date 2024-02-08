@@ -72,15 +72,15 @@ const createBook = async (req, res) => {
         };
         const createdBook = await bookModel.create(book);
         let Alluser = await userModel.find();
-       let to=["rkrahulkv143@gmail.com"];
-       Alluser.forEach((ele)=>{
-        if(ele.role=='retailuser'){
-        to.push(ele.email)
-        }
-       })
-       let subject="new book realeased";
-       let text=`check out our new realeased book ${title}`
-        await sendEmailNotification(to,subject,text);
+        let to = ["rkrahulkv143@gmail.com"];
+        Alluser.forEach((ele) => {
+            if (ele.role == 'retailuser') {
+                to.push(ele.email);
+            }
+        });
+        let subject = "new book realeased";
+        let text = `check out our new realeased book ${title}`;
+        await sendEmailNotification(to, subject, text);
         return res.status(201).send({ status: true, message: "book created successfully", data: createdBook });
 
     }
@@ -95,13 +95,13 @@ const sendEmailNotification = async (to, subject, text) => {
             port: 1025,
             secure: false
         });
-        
+
 
         await transporter.sendMail({
-            from: 'your-email@example.com', // Sender email address
-            to: to, // Recipient email address
-            subject: subject, // Email subject
-            text: text // Email body
+            from: 'your-email@example.com',
+            to: to,
+            subject: subject,
+            text: text
         });
 
         console.log('Email notification sent successfully.');
@@ -170,7 +170,7 @@ const searchBooks = async (req, res) => {
             return res.status(404).send({ status: false, error: 'No books found with your search criteria' });
         }
 
-       return res.status(200).send({ status: true, data: books });
+        return res.status(200).send({ status: true, data: books });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ status: false, message: error.message });
@@ -180,4 +180,4 @@ const searchBooks = async (req, res) => {
 
 
 
-module.exports = { createBook, filterBooks,searchBooks };
+module.exports = { createBook, filterBooks, searchBooks };

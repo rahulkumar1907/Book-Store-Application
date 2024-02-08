@@ -10,7 +10,7 @@ const dbURI = "mongodb+srv://rahulkumar:9996262236@cluster0.jdea1mv.mongodb.net/
 mongoose.connect(dbURI).then(() => {
     console.log("Mongo db is connected");
 }).catch((err) => {
-    console.log("Error in mongo db connection",err.message);
+    console.log("Error in mongo db connection", err.message);
 });
 app.use('/', routes);
 

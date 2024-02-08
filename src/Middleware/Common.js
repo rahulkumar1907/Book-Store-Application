@@ -10,19 +10,18 @@ const authentication = async function (req, res, next) {
                 .send({ status: false, message: "Please pass token" });
         }
 
-        //decode token
         try {
             const decodedToken = jwt.verify(token, "book_management", {
             });
             req.decodedToken = decodedToken;
-            req.userId=decodedToken.userId;
+            req.userId = decodedToken.userId;
         } catch (error) {
             return res
                 .status(401)
                 .send({ status: false, message: "Authentication failed" });
         }
         console.log("authentication successful");
-        
+
         next();
 
     } catch (error) {
@@ -32,4 +31,4 @@ const authentication = async function (req, res, next) {
 
 
 
-module.exports = { authentication};
+module.exports = { authentication };

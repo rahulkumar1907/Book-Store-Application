@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const bookModel = require('../Model/bookModel');
 const userModel = require('../Model/userModel');
 const purchaseModel = require('../Model/purchaseModel');
-
-const revenueModel = require('../Model/revenueModel'); // Import revenue model
+const revenueModel = require('../Model/revenueModel');
 
 const createPurchaseHistory = async (req, res) => {
     try {
@@ -55,7 +54,6 @@ const createPurchaseHistory = async (req, res) => {
 
         const savedPurchase = await purchaseModel.create(purchase);
 
-        // Update revenue collection for each author
         for (const authorId of book.authors) {
             await revenueModel.findOneAndUpdate(
                 { authorId: authorId, bookId: book._id, isDeleted: false },
@@ -75,7 +73,7 @@ const getPurchaseHistoryByUser = async (req, res) => {
         const purchaseId = req.params.purchaseId;
         if (!purchaseId) { return res.status(400).send({ status: false, error: "missing/invalid parameter purchaseId" }); }
         if (!mongoose.Types.ObjectId.isValid(purchaseId)) { return res.status(400).send({ status: false, error: "missing/invalid parameter purchaseId" }); }
-        console.log("req.userId",req.userId)
+        console.log("req.userId", req.userId);
         const purchaseHistory = await purchaseModel.find({ _id: purchaseId, userId: req.userId.toString(), isDeleted: false }).select({ __v: 0, userId: 0 });
         if (purchaseHistory.length === 0) { return res.status(404).send({ status: false, error: "no record found" }); }
         return res.status(200).json({ status: true, data: purchaseHistory });
@@ -87,8 +85,8 @@ const getPurchaseHistoryByUser = async (req, res) => {
 const getRevenueForAuthor = async (req, res) => {
     try {
         const userId = req.params.userId;
-        console.log("req.userId",req.userId)
-        if (userId!=req.userId) { return res.status(401).send({ status: false, error: "user not authorised" }); }
+        console.log("req.userId", req.userId);
+        if (userId != req.userId) { return res.status(401).send({ status: false, error: "user not authorised" }); }
 
         if (!userId) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
         if (!mongoose.Types.ObjectId.isValid(userId)) { return res.status(400).send({ status: false, error: "missing/invalid parameter userId" }); }
